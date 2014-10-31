@@ -12,7 +12,7 @@ This project comes from a component developed by Troy Brant , i have add recursi
 	                                               error:&error];
                       
     //method to remove extra node
-    NSMutableDictionary *dic_removeKeyNode = [[XMLReader recursionRemoveTextNode:dic_convertJson] mutableCopy];
+    NSMutableDictionary *dic_removeKeyNode = [[XMLReader recursionRemoveTextNode:dict] mutableCopy];
 
 
 

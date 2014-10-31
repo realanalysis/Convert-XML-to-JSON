@@ -4,6 +4,7 @@
 //  Created by Troy Brant on 9/18/10.
 //  Updated by Antoine Marcadet on 9/23/11.
 //  Updated by Divan Visagie on 2012-08-26
+// Updated by Kui Liu on 2014/10/31
 //
 
 #import <Foundation/Foundation.h>
@@ -21,5 +22,8 @@ typedef NSUInteger XMLReaderOptions;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data options:(XMLReaderOptions)options error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string options:(XMLReaderOptions)options error:(NSError **)errorPointer;
+
+// i used recurstion method to remove all extra node, if you need help, you are welcome to contact me by jackliut606@gmail.com
++(NSMutableDictionary *)recursionRemoveTextNode:(NSDictionary *)dic;
 
 @end

@@ -4,6 +4,7 @@
 //  Created by Troy Brant on 9/18/10.
 //  Updated by Antoine Marcadet on 9/23/11.
 //  Updated by Divan Visagie on 2012-08-26
+//  Updated by Kui Liu on 2014/10/31
 //
 
 #import "XMLReader.h"
@@ -12,7 +13,7 @@
 #error "XMLReader requires ARC support."
 #endif
 
-NSString *const kXMLReaderTextNodeKey		= @"text";
+NSString *const kXMLReaderTextNodeKey		= @"jacknode";
 NSString *const kXMLReaderAttributePrefix	= @"@";
 
 @interface XMLReader ()
@@ -39,6 +40,56 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     return [XMLReader dictionaryForXMLData:data error:error];
+}
+
+
+#pragma mark -
++(NSMutableDictionary *)recursionRemoveTextNode:(NSDictionary *)dic
+{
+    NSMutableDictionary *dic_ = [NSMutableDictionary dictionary];
+    for(id key in dic)
+    {
+//        NSLog(@"print out class %@",[[dic objectForKey:key] class]);
+        
+        if([[[dic objectForKey:key] class] isSubclassOfClass:[NSDictionary class]])
+        {
+            //if it is nsdictionary , then we go deep to see the first key of this dicitonary
+            if([[dic objectForKey:key] count]==1)
+            {
+                NSMutableDictionary *tempDic = [dic objectForKey:key];
+                for(id key_ in tempDic)
+                {
+                    NSString *string_key = [NSString stringWithFormat:@"%@",key_];
+                    if([string_key isEqualToString:kXMLReaderTextNodeKey])
+                    {
+                        [dic_ setObject:[tempDic objectForKey:key_] forKey:key];//remove message key
+                    }
+                    else
+                        [dic_ setObject:[self recursionRemoveTextNode:[dic objectForKey:key]] forKey:key];
+                }
+            }
+            else
+                [dic_ setObject:[self recursionRemoveTextNode:[dic objectForKey:key]] forKey:key];
+        }
+        else if([[[dic objectForKey:key] class] isSubclassOfClass:[NSArray class]])
+        {
+            NSMutableArray *newArray = [NSMutableArray array];
+            NSMutableArray *array = [[dic objectForKey:key] mutableCopy];
+            
+            for(int i =0 ; i < [array count]; i++)
+            {
+                NSMutableDictionary *tempDic = [self recursionRemoveTextNode:[array objectAtIndex:i]];
+                [newArray addObject:tempDic];
+            }
+            
+            [dic_ setObject:newArray forKey:key];
+        }
+        else
+        {
+            [dic_ setObject:[dic objectForKey:key] forKey:key];
+        }
+    }
+    return dic_;
 }
 
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data options:(XMLReaderOptions)options error:(NSError **)error
