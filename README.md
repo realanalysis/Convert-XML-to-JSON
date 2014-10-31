@@ -1,6 +1,6 @@
 # XMLReader
 
-This project comes from a component developed by Troy Brant , i have add recurstion method to remove extra node from the result.
+This project comes from a component developed by Troy Brant , i have add recursion method to remove extra node from the result.
 
 
 ## Usage
